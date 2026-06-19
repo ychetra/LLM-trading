@@ -26,29 +26,49 @@ Disable online learning (frozen model)
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
 
+def _load_dotenv(path: str = ".env") -> None:
+    """Load key=value pairs from .env into os.environ (no extra dependencies)."""
+    p = Path(path)
+    if not p.exists():
+        return
+    for line in p.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, val = line.partition("=")
+        os.environ.setdefault(key.strip(), val.strip())
+
+
 def main() -> None:
+    _load_dotenv()
+
     parser = argparse.ArgumentParser(
         description="Run the PPO XAUUSD agent live on Exness MT5."
     )
     parser.add_argument(
-        "--login", type=int, default=None,
-        help="MT5 account login number (Exness demo account number).",
+        "--login", type=int,
+        default=int(os.environ.get("MT5_LOGIN", 0)) or None,
+        help="MT5 account login number (or set MT5_LOGIN in .env).",
     )
     parser.add_argument(
-        "--password", type=str, default=None,
-        help="MT5 account password.",
+        "--password", type=str,
+        default=os.environ.get("MT5_PASSWORD"),
+        help="MT5 account password (or set MT5_PASSWORD in .env).",
     )
     parser.add_argument(
-        "--server", type=str, default=None,
-        help="MT5 server name (e.g. Exness-MT5Trial or Exness-MT5Real).",
+        "--server", type=str,
+        default=os.environ.get("MT5_SERVER"),
+        help="MT5 server name (or set MT5_SERVER in .env).",
     )
     parser.add_argument(
-        "--symbol", type=str, default="XAUUSD",
-        help="Symbol to trade (default: XAUUSD).",
+        "--symbol", type=str,
+        default=os.environ.get("MT5_SYMBOL", "XAUUSD"),
+        help="Symbol to trade (default: XAUUSD, or set MT5_SYMBOL in .env).",
     )
     parser.add_argument(
         "--model", type=str, default=None,

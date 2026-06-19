@@ -1,0 +1,23 @@
+# Credentials — NEVER commit these
+.env
+
+# Data files (large CSVs)
+data/
+
+# Model artifacts
+models/
+eval_logs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Logs
+logs/
+
+# macOS
+.DS_Store
