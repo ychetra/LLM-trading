@@ -21,3 +21,8 @@ logs/
 
 # macOS
 .DS_Store
+
+# Next.js
+.next/
+node_modules/
+out/
